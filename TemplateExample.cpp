@@ -29,11 +29,19 @@ struct Particle
     vec3 velocity;
 };
 
-
-// Calculates the new position of a particle at a given time step.
-vec3 calculate_position(const Particle& particle, float timeStep)
+struct ParticleColored
 {
-    return particle.velocity * timeStep;
+    vec3 position;
+    vec3 velocity;
+    vec3 color;
+};
+
+
+// Calculates the new position of a physics object at a given time step.
+template<typename T>
+vec3 calculate_position(const T& physicsObject, float timeStep)
+{
+    return physicsObject.velocity * timeStep;
 }
 
 
@@ -47,11 +55,20 @@ int main()
     constexpr const Particle DefaultParticle { /*position*/{ 0,0,0 }, /*velocity*/{ 1,0,0 } };
     std::fill_n(pParticles, ParticleCount, DefaultParticle);
 
+    // Create and fill a ParticleColored buffer
+    ParticleColored* pParticlesColoured = new ParticleColored[ParticleCount];
+    constexpr const ParticleColored DefaultParticleColored{ /*position*/{ 0,0,0 }, /*velocity*/{ 1,0,0 }, /*color*/{0,1,0} };
+    std::fill_n(pParticlesColoured, ParticleCount, DefaultParticleColored);
+
     // Update the position of all the particles.
     for (size_t particleIndex = 0; particleIndex < ParticleCount; particleIndex++)
     {
         pParticles[particleIndex].position += calculate_position(pParticles[particleIndex], TimeStep);
+        pParticlesColoured[particleIndex].position += calculate_position(pParticlesColoured[particleIndex], TimeStep);
     }
+
+    delete pParticles;
+    delete pParticlesColoured;
 
     return 0;
 }
