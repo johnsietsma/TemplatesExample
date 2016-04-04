@@ -61,11 +61,15 @@ int main()
     constexpr const size_t ParticleCount = 100; // How many particles we'll have
     constexpr const float TimeStep = 1/30.f;    // How much time passes for each update
 
+    constexpr vec3 origin{ 0,0,0 };
+    constexpr vec3 right{ 1,0,0 };
+    constexpr vec3 green{ 1,0,0 };
+
     // Create and fill a Particle buffer
-    Particle* pParticles = make_buffer<Particle,ParticleCount>(/*position*/vec3{ 0,0,0 }, /*velocity*/vec3{ 1,0,0 });
+    Particle* pParticles = make_buffer<Particle,ParticleCount>(origin, right);
 
     // Create and fill a ParticleColored buffer
-    ParticleColored* pParticlesColored = make_buffer<ParticleColored, ParticleCount>(/*position*/vec3{ 0,0,0 }, /*velocity*/vec3{ 1,0,0 }, /*color*/vec3{ 0,1,0 });
+    ParticleColored* pParticlesColored = make_buffer<ParticleColored, ParticleCount>(origin, right, green);
 
     // Update the position of all the particles.
     for (size_t particleIndex = 0; particleIndex < ParticleCount; particleIndex++)
