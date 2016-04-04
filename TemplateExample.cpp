@@ -47,11 +47,11 @@ vec3 calculate_position(const T& physicsObject, float timeStep)
 
 
 // Make and fill a buffer using the defaultObject.
-template<typename T, int TCount>
-T* make_buffer(const T& defaultObject)
+template<typename T, int TCount, typename... TArgs>
+T* make_buffer(TArgs... args)
 {
     T* pBuffer = new T[TCount];
-    std::fill_n(pBuffer, TCount, defaultObject);
+    std::fill_n(pBuffer, TCount, T{args...});
     return pBuffer;
 }
 
@@ -62,12 +62,10 @@ int main()
     constexpr const float TimeStep = 1/30.f;    // How much time passes for each update
 
     // Create and fill a Particle buffer
-    constexpr const Particle DefaultParticle{ /*position*/{ 0,0,0 }, /*velocity*/{ 1,0,0 } };
-    Particle* pParticles = make_buffer<Particle,ParticleCount>( DefaultParticle );
+    Particle* pParticles = make_buffer<Particle,ParticleCount>(/*position*/vec3{ 0,0,0 }, /*velocity*/vec3{ 1,0,0 });
 
     // Create and fill a ParticleColored buffer
-    constexpr const ParticleColored DefaultParticleColored{ /*position*/{ 0,0,0 }, /*velocity*/{ 1,0,0 }, /*color*/{0,1,0} };
-    ParticleColored* pParticlesColored = make_buffer<ParticleColored, ParticleCount>(DefaultParticleColored);
+    ParticleColored* pParticlesColored = make_buffer<ParticleColored, ParticleCount>(/*position*/vec3{ 0,0,0 }, /*velocity*/vec3{ 1,0,0 }, /*color*/vec3{ 0,1,0 });
 
     // Update the position of all the particles.
     for (size_t particleIndex = 0; particleIndex < ParticleCount; particleIndex++)
