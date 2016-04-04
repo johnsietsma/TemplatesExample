@@ -22,6 +22,7 @@ struct vec3
     }
 };
 
+
 // A simple Particle.
 struct Particle
 {
@@ -45,30 +46,39 @@ vec3 calculate_position(const T& physicsObject, float timeStep)
 }
 
 
+// Make and fill a buffer using the defaultObject.
+template<typename T, int TCount>
+T* make_buffer(const T& defaultObject)
+{
+    T* pBuffer = new T[TCount];
+    std::fill_n(pBuffer, TCount, defaultObject);
+    return pBuffer;
+}
+
+
 int main()
 {
     constexpr const size_t ParticleCount = 100; // How many particles we'll have
     constexpr const float TimeStep = 1/30.f;    // How much time passes for each update
 
     // Create and fill a Particle buffer
-    Particle* pParticles = new Particle[ParticleCount];
-    constexpr const Particle DefaultParticle { /*position*/{ 0,0,0 }, /*velocity*/{ 1,0,0 } };
-    std::fill_n(pParticles, ParticleCount, DefaultParticle);
+    constexpr const Particle DefaultParticle{ /*position*/{ 0,0,0 }, /*velocity*/{ 1,0,0 } };
+    Particle* pParticles = make_buffer<Particle,ParticleCount>( DefaultParticle );
 
     // Create and fill a ParticleColored buffer
-    ParticleColored* pParticlesColoured = new ParticleColored[ParticleCount];
     constexpr const ParticleColored DefaultParticleColored{ /*position*/{ 0,0,0 }, /*velocity*/{ 1,0,0 }, /*color*/{0,1,0} };
-    std::fill_n(pParticlesColoured, ParticleCount, DefaultParticleColored);
+    ParticleColored* pParticlesColored = make_buffer<ParticleColored, ParticleCount>(DefaultParticleColored);
 
     // Update the position of all the particles.
     for (size_t particleIndex = 0; particleIndex < ParticleCount; particleIndex++)
     {
         pParticles[particleIndex].position += calculate_position(pParticles[particleIndex], TimeStep);
-        pParticlesColoured[particleIndex].position += calculate_position(pParticlesColoured[particleIndex], TimeStep);
+        pParticlesColored[particleIndex].position += calculate_position(pParticlesColored[particleIndex], TimeStep);
     }
 
+    // Cleanup
     delete pParticles;
-    delete pParticlesColoured;
+    delete pParticlesColored;
 
     return 0;
 }
